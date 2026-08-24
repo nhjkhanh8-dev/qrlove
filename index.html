@@ -5,170 +5,131 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Khánh ❤️ Thư</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            background: linear-gradient(to bottom, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Georgia', serif;
-            overflow: hidden;
-            color: white;
+            background:#000;
+            min-height:100vh;
+            display:flex; flex-direction:column;
+            justify-content:center; align-items:center;
+            font-family:'Segoe UI',sans-serif;
+            overflow:hidden; color:white;
+        }
+        canvas#fw { position:fixed; top:0; left:0; z-index:1; pointer-events:none; }
+        .content { z-index:2; text-align:center; position:relative; }
+
+        /* Gõ chữ */
+        .typing {
+            font-size:42px; font-weight:bold;
+            min-height:60px;
+            background:linear-gradient(90deg,#ff6b6b,#ffa07a,#ff69b4,#FFD700);
+            background-size:300% auto;
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            animation:rainbow 4s linear infinite;
+        }
+        @keyframes rainbow { to { background-position:300% center; } }
+        .cursor { display:inline-block; width:3px; height:45px; background:#ff69b4; animation:blink 0.8s infinite; vertical-align:middle; }
+        @keyframes blink { 50% { opacity:0; } }
+
+        /* Tim đập lớn */
+        .heart-big {
+            font-size:180px; margin-bottom:20px;
+            animation:heartbeat 1s infinite;
+            filter:drop-shadow(0 0 80px rgba(255,50,50,0.8));
+        }
+        @keyframes heartbeat {
+            0%,100% { transform:scale(1); }
+            20% { transform:scale(1.25); }
+            40% { transform:scale(1); }
+            60% { transform:scale(1.15); }
         }
 
-        /* Hoa vàng rơi */
-        .petal {
-            position: fixed;
-            top: -30px;
-            width: 15px;
-            height: 15px;
-            background: radial-gradient(ellipse at center, #FFD700 30%, #FFA500 70%);
-            border-radius: 80% 20% 80% 20%;
-            animation: fall linear infinite;
-            z-index: 1;
-            opacity: 0.8;
-        }
-        @keyframes fall {
-            0% { transform: translateY(-30px) rotate(0deg) translateX(0px); opacity: 1; }
-            25% { transform: translateY(25vh) rotate(90deg) translateX(20px); opacity: 0.9; }
-            50% { transform: translateY(50vh) rotate(180deg) translateX(-15px); opacity: 0.7; }
-            75% { transform: translateY(75vh) rotate(270deg) translateX(10px); opacity: 0.5; }
-            100% { transform: translateY(105vh) rotate(360deg) translateX(-5px); opacity: 0; }
-        }
+        /* Dòng chữ phụ */
+        .sub { margin-top:25px; font-size:20px; color:rgba(255,255,255,0.8); opacity:0; animation:fadein 2s ease-in 2s forwards; }
+        @keyframes fadein { to { opacity:1; } }
 
-        /* Tim đập */
-        .heart-box { text-align: center; z-index: 3; position: relative; }
-        .heart-icon {
-            font-size: 140px;
-            animation: beat 1s infinite;
-            filter: drop-shadow(0 0 40px rgba(255,107,107,0.8));
+        /* Đếm ngày */
+        .days-box {
+            margin-top:25px; padding:12px 30px;
+            border:2px solid rgba(255,107,107,0.5);
+            border-radius:50px;
+            background:rgba(255,107,107,0.1);
+            backdrop-filter:blur(10px);
+            opacity:0; animation:fadein 2s ease-in 3.5s forwards;
         }
-        @keyframes beat {
-            0%, 100% { transform: scale(1); }
-            15% { transform: scale(1.2); }
-            30% { transform: scale(1); }
-            45% { transform: scale(1.15); }
-        }
+        .days-box span { font-size:32px; font-weight:bold; color:#ff6b6b; }
 
-        /* Tên */
-        .names {
-            margin-top: 25px;
-            text-align: center;
+        /* Nút bấm */
+        .btn-love {
+            margin-top:25px; padding:15px 40px;
+            border:none; border-radius:50px;
+            background:linear-gradient(90deg,#ff6b6b,#ff69b4);
+            color:white; font-size:18px; cursor:pointer;
+            transition:all 0.3s; opacity:0;
+            animation:fadein 2s ease-in 5s forwards;
+            box-shadow:0 5px 30px rgba(255,107,107,0.5);
         }
-        .names h1 {
-            font-size: 52px;
-            font-weight: bold;
-            letter-spacing: 5px;
-            background: linear-gradient(90deg, #FFD700, #FFF8DC, #FFD700);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 3s linear infinite;
-            text-shadow: none;
-        }
-        @keyframes shine {
-            to { background-position: 200% center; }
-        }
-        .heart-divider {
-            font-size: 30px;
-            margin: 15px 0;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.3); opacity: 0.7; }
-        }
-
-        /* Lời nhắn */
-        .msg {
-            margin-top: 20px;
-            font-size: 20px;
-            color: rgba(255,215,0,0.9);
-            font-style: italic;
-            max-width: 400px;
-            line-height: 1.6;
-            opacity: 0;
-            animation: appear 2s ease-in 1s forwards;
-        }
-        @keyframes appear { to { opacity: 1; } }
-
-        /* Vòng tròn sáng */
-        .glow-ring {
-            position: absolute;
-            width: 350px; height: 350px;
-            border: 2px solid rgba(255,215,0,0.3);
-            border-radius: 50%;
-            animation: ringPulse 3s infinite;
-            z-index: 0;
-        }
-        .glow-ring:nth-child(2) { animation-delay: 1s; width: 420px; height: 420px; }
-        @keyframes ringPulse {
-            0%, 100% { transform: scale(1); opacity: 0.3; }
-            50% { transform: scale(1.1); opacity: 0.6; }
-        }
-
-        /* Đếm ngày yêu */
-        .counter {
-            margin-top: 30px;
-            padding: 15px 35px;
-            border: 1px solid rgba(255,215,0,0.4);
-            border-radius: 50px;
-            background: rgba(255,215,0,0.05);
-            backdrop-filter: blur(5px);
-        }
-        .counter p { font-size: 16px; color: #FFD700; }
-        .counter span { font-size: 28px; font-weight: bold; color: white; }
+        .btn-love:hover { transform:scale(1.1); box-shadow:0 5px 50px rgba(255,107,107,0.8); }
     </style>
 </head>
 <body>
-
-    <!-- Vòng tròn sáng -->
-    <div class="glow-ring"></div>
-    <div class="glow-ring"></div>
-
-    <!-- Nội dung chính -->
-    <div class="heart-box">
-        <div class="heart-icon">💛</div>
-        <div class="names">
-            <h1>Khánh ♥ Thư</h1>
-        </div>
-        <div class="heart-divider">💕 💛 💕</div>
-        <p class="msg">"Gặp em là điều đẹp nhất<br>Anh từng làm trong đời 🌹"</p>
-        <div class="counter">
-            <p>Yêu em đã</p><br>
-            <span id="days">0</span> ngày
-        </div>
+    <canvas id="fw"></canvas>
+    <div class="content">
+        <div class="heart-big">❤️</div><br>
+        <div class="typing"><span class="cursor">|</span></div>
+        <p class="sub">💕 Từ ngày gặp em, đời anh đẹp hơn 💕</p>
+        <div class="days-box">Yêu em <span id="d">0</span> ngày 🌹</div>
+        <button class="btn-love" onclick="fireworks()">🎁 BẤM VÀO ĐÂY</button>
     </div>
+    <audio autoplay loop src="https://cdn.pixabay.com/audio/2022/02/22/audio_716756db81.mp3"></audio>
+<script>
+// === GÕ CHỮ TỪNG KÝ TỰ ===
+const text = "Khánh ❤️ Thư";
+const el = document.querySelector('.typing');
+const cursor = document.querySelector('.cursor');
+let i = 0;
+function type() {
+    if (i < text.length) {
+        cursor.insertAdjacentText('beforebegin', text[i]);
+        i++;
+        setTimeout(type, 120);
+    }
+}
+setTimeout(type, 800);
 
-    <!-- Nhạc nền -->
-    <audio autoplay loop src="https://cdn.pixabay.com/audio/2023/08/03/audio_3424216029.mp3"></audio>
+// === PHÁO HOA ===
+const cv = document.getElementById('fw');
+const ctx = cv.getContext('2d');
+cv.width = innerWidth; cv.height = innerHeight;
+let parts = [];
+function explode(x, y) {
+    const colors = ['#ff6b6b','#ffa07a','#ff69b4','#FFD700','#00ff88','#87ceeb'];
+    for(let j=0;j<60;j++){
+        const a=Math.random()*Math.PI*2, s=2+Math.random()*6;
+        parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:1,color:colors[Math.floor(Math.random()*colors.length)]});
+    }
+}
+function loop(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ctx.globalCompositeOperation='lighter';
+    for(let k=parts.length-1;k>=0;k--){
+        const p=parts[k];
+        p.x+=p.vx;p.y+=p.vy;p.vy+=0.05;p.vx*=0.98;p.vy*=0.98;p.life-=0.015;
+        if(p.life<=0){parts.splice(k,1);continue;}
+        ctx.beginPath();ctx.arc(p.x,p.y,2*p.life,0,Math.PI*2);
+        ctx.fillStyle=p.color;ctx.globalAlpha=p.life;ctx.fill();
+    }
+    ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+    requestAnimationFrame(loop);
+}
+loop();
+function fireworks(){ for(let k=0;k<5;k++) setTimeout(()=>explode(Math.random()*innerWidth,Math.random()*innerHeight*0.5),k*300); }
+setInterval(()=>{ if(Math.random()>0.7) explode(Math.random()*innerWidth,Math.random()*innerHeight*0.4); },2000);
 
-    <!-- JS tạo hoa vàng rơi + đếm ngày -->
-    <script>
-        // Tạo hoa vàng rơi
-        const colors = ['#FFD700', '#FFC700', '#FFB300', '#FFD54F', '#FFE082'];
-        setInterval(() => {
-            const petal = document.createElement('div');
-            petal.className = 'petal';
-            petal.style.left = Math.random() * 100 + 'vw';
-            petal.style.animationDuration = (4 + Math.random() * 5) + 's';
-            petal.style.width = (10 + Math.random() * 12) + 'px';
-            petal.style.height = (10 + Math.random() * 12) + 'px';
-            petal.style.background = `radial-gradient(ellipse at center, ${colors[Math.floor(Math.random()*colors.length)]} 30%, transparent 80%)`;
-            document.body.appendChild(petal);
-            setTimeout(() => petal.remove(), 9000);
-        }, 200);
-
-        // Đếm ngày yêu (đổi ngày bắt đầu tại đây)
-        const startDate = new Date('2025-01-01');
-        function updateDays() {
-            const now = new Date();
-            const diff = Math.floor((now - startDate) / (1000*60*60*24));
-            document.getElementById('days').textContent = diff;
-        }
-        updateDays();
-    </script>
+// === ĐẾM NGÀY YÊU ===
+const start = new Date('2025-01-01');
+function upd(){ document.getElementById('d').textContent = Math.floor((new Date()-start)/(86400000)); }
+upd();
+</script>
 </body>
 </html>
