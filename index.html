@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khánh ❤️ Thư</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(to bottom, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* Hoa vàng rơi */
+        .petal {
+            position: fixed;
+            top: -30px;
+            width: 15px;
+            height: 15px;
+            background: radial-gradient(ellipse at center, #FFD700 30%, #FFA500 70%);
+            border-radius: 80% 20% 80% 20%;
+            animation: fall linear infinite;
+            z-index: 1;
+            opacity: 0.8;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-30px) rotate(0deg) translateX(0px); opacity: 1; }
+            25% { transform: translateY(25vh) rotate(90deg) translateX(20px); opacity: 0.9; }
+            50% { transform: translateY(50vh) rotate(180deg) translateX(-15px); opacity: 0.7; }
+            75% { transform: translateY(75vh) rotate(270deg) translateX(10px); opacity: 0.5; }
+            100% { transform: translateY(105vh) rotate(360deg) translateX(-5px); opacity: 0; }
+        }
+
+        /* Tim đập */
+        .heart-box { text-align: center; z-index: 3; position: relative; }
+        .heart-icon {
+            font-size: 140px;
+            animation: beat 1s infinite;
+            filter: drop-shadow(0 0 40px rgba(255,107,107,0.8));
+        }
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.2); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.15); }
+        }
+
+        /* Tên */
+        .names {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .names h1 {
+            font-size: 52px;
+            font-weight: bold;
+            letter-spacing: 5px;
+            background: linear-gradient(90deg, #FFD700, #FFF8DC, #FFD700);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+            text-shadow: none;
+        }
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+        .heart-divider {
+            font-size: 30px;
+            margin: 15px 0;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.7; }
+        }
+
+        /* Lời nhắn */
+        .msg {
+            margin-top: 20px;
+            font-size: 20px;
+            color: rgba(255,215,0,0.9);
+            font-style: italic;
+            max-width: 400px;
+            line-height: 1.6;
+            opacity: 0;
+            animation: appear 2s ease-in 1s forwards;
+        }
+        @keyframes appear { to { opacity: 1; } }
+
+        /* Vòng tròn sáng */
+        .glow-ring {
+            position: absolute;
+            width: 350px; height: 350px;
+            border: 2px solid rgba(255,215,0,0.3);
+            border-radius: 50%;
+            animation: ringPulse 3s infinite;
+            z-index: 0;
+        }
+        .glow-ring:nth-child(2) { animation-delay: 1s; width: 420px; height: 420px; }
+        @keyframes ringPulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.6; }
+        }
+
+        /* Đếm ngày yêu */
+        .counter {
+            margin-top: 30px;
+            padding: 15px 35px;
+            border: 1px solid rgba(255,215,0,0.4);
+            border-radius: 50px;
+            background: rgba(255,215,0,0.05);
+            backdrop-filter: blur(5px);
+        }
+        .counter p { font-size: 16px; color: #FFD700; }
+        .counter span { font-size: 28px; font-weight: bold; color: white; }
+    </style>
+</head>
+<body>
+
+    <!-- Vòng tròn sáng -->
+    <div class="glow-ring"></div>
+    <div class="glow-ring"></div>
+
+    <!-- Nội dung chính -->
+    <div class="heart-box">
+        <div class="heart-icon">💛</div>
+        <div class="names">
+            <h1>Khánh ♥ Thư</h1>
+        </div>
+        <div class="heart-divider">💕 💛 💕</div>
+        <p class="msg">"Gặp em là điều đẹp nhất<br>Anh từng làm trong đời 🌹"</p>
+        <div class="counter">
+            <p>Yêu em đã</p><br>
+            <span id="days">0</span> ngày
+        </div>
+    </div>
+
+    <!-- Nhạc nền -->
+    <audio autoplay loop src="https://cdn.pixabay.com/audio/2023/08/03/audio_3424216029.mp3"></audio>
+
+    <!-- JS tạo hoa vàng rơi + đếm ngày -->
+    <script>
+        // Tạo hoa vàng rơi
+        const colors = ['#FFD700', '#FFC700', '#FFB300', '#FFD54F', '#FFE082'];
+        setInterval(() => {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDuration = (4 + Math.random() * 5) + 's';
+            petal.style.width = (10 + Math.random() * 12) + 'px';
+            petal.style.height = (10 + Math.random() * 12) + 'px';
+            petal.style.background = `radial-gradient(ellipse at center, ${colors[Math.floor(Math.random()*colors.length)]} 30%, transparent 80%)`;
+            document.body.appendChild(petal);
+            setTimeout(() => petal.remove(), 9000);
+        }, 200);
+
+        // Đếm ngày yêu (đổi ngày bắt đầu tại đây)
+        const startDate = new Date('2025-01-01');
+        function updateDays() {
+            const now = new Date();
+            const diff = Math.floor((now - startDate) / (1000*60*60*24));
+            document.getElementById('days').textContent = diff;
+        }
+        updateDays();
+    </script>
+</body>
+</html>
