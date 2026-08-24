@@ -82,6 +82,22 @@
 
     <!-- Hoa rơi -->
     <script>
+        // Doc tham so tu URL: ?n1=Ten1&n2=Ten2&msg=Loi nhan
+        const urlParams = new URLSearchParams(window.location.search);
+        const p_n1 = urlParams.get('n1');
+        const p_n2 = urlParams.get('n2');
+        const p_msg = urlParams.get('msg');
+
+        // Neu co tham so -> hien luon khong can dien
+        if (p_n1 && p_n2) {
+            document.getElementById('form').style.display = 'none';
+            const res = document.getElementById('result');
+            res.style.display = 'block';
+            document.getElementById('displayName').textContent = decodeURIComponent(p_n1) + ' ❤️ ' + decodeURIComponent(p_n2);
+            document.getElementById('displayMsg').textContent = '"' + decodeURIComponent(p_msg || 'Yêu em 💕') + '"';
+        }
+
+        // Tao hoa rơi
         setInterval(()=>{
             const p=document.createElement('div'); p.className='petal';
             p.style.left=Math.random()*100+'vw';
@@ -89,6 +105,7 @@
             document.body.appendChild(p);
             setTimeout(()=>p.remove(),9000);
         },300);
+
         function generate(){
             const n1=document.getElementById('name1').value||'Anh';
             const n2=document.getElementById('name2').value||'Em';
